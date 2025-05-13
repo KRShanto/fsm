@@ -81,8 +81,8 @@ export default async function Page({ params }: { params: { id: string } }) {
   return (
     <div className="min-h-screen bg-white font-montserrat">
       <Header
-        heading="Product Details"
-        subheading={product.heading || "Product Details"}
+        heading="FSM Safety Selectons"
+        subheading="Explore Our Curated Collection of World-Class Safety Solutions—Selected Just for You."
       />
       <div className="mx-auto mt-8 flex max-w-6xl gap-10">
         {/* Product Images Gallery (Client Component) */}
