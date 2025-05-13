@@ -23,8 +23,6 @@ export const metadata: Metadata = {
   title: "Be Safe",
 };
 
-
-
 export default function RootLayout({
   children,
 }: Readonly<{

@@ -4,6 +4,8 @@ import supabase from "@/lib/supabase-client";
 import { Product } from "@/types/products";
 import { notFound } from "next/navigation";
 import ProductImagesGallery from "@/components/ProductImagesGallery";
+import TabsLayout from "@/components/TabsLayout";
+import "../../editor.css";
 
 // Make this a server component for data fetching
 export const dynamic = "force-dynamic";
@@ -14,7 +16,8 @@ async function getProduct(id: string): Promise<Product | null> {
     .select(
       `
       *,
-      product_images(*)
+      product_images(*),
+      documentation(*)
     `,
     )
     .eq("id", id)
@@ -49,6 +52,31 @@ export default async function Page({ params }: { params: { id: string } }) {
       ? JSON.parse(product.sectors)
       : product.sectors
     : [];
+
+  // Prepare tab data
+  const tabsData = [
+    {
+      id: "description",
+      label: "Description",
+      content: product.long_description || "No description available",
+    },
+    {
+      id: "standards",
+      label: "Standards / Certifications",
+      content: product.standards || "No standards information available",
+    },
+    {
+      id: "sectors",
+      label: "Sectors",
+      content: `<ul>${sectors.map((sector: string) => `<li>${sector}</li>`).join("")}</ul>`,
+    },
+    {
+      id: "documentation",
+      label: "Documentation",
+      content: "documentation",
+      docs: product.documentation || [],
+    },
+  ];
 
   return (
     <div className="min-h-screen bg-white font-montserrat">
@@ -98,38 +126,12 @@ export default async function Page({ params }: { params: { id: string } }) {
               <div className="text-lg">{product.size}</div>
             </div>
           )}
-
-          <div className="mt-4">
-            <div className="flex gap-8 border-b">
-              <button className="border-b-2 border-yellow-400 pb-2 font-bold text-blue-900">
-                Sectors
-              </button>
-            </div>
-            {sectors.length > 0 ? (
-              <ul className="mt-2 list-disc pl-6 text-gray-700">
-                {sectors.map((sector: string, idx: number) => (
-                  <li key={idx}>{sector}</li>
-                ))}
-              </ul>
-            ) : (
-              <p className="mt-2 text-gray-500">No sectors specified</p>
-            )}
-          </div>
-
-          {product.standards && (
-            <div className="mt-4">
-              <div className="mb-1 text-lg font-bold">Standards</div>
-              <p className="text-gray-700">{product.standards}</p>
-            </div>
-          )}
-
-          {product.long_description && (
-            <div className="mt-4">
-              <div className="mb-1 text-lg font-bold">Description</div>
-              <p className="text-gray-700">{product.long_description}</p>
-            </div>
-          )}
         </div>
+      </div>
+
+      {/* Tabbed Content Section */}
+      <div className="mx-auto mt-12 max-w-6xl">
+        <TabsLayout tabs={tabsData} />
       </div>
     </div>
   );
