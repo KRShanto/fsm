@@ -3,6 +3,7 @@ import Image from "next/image";
 import supabase from "@/lib/supabase-client";
 import { Product, ProductImage } from "@/types/products";
 import Link from "next/link";
+import ProductTopBrands from "@/components/ProductTopBrands";
 
 // Make this a server component for data fetching
 export const dynamic = "force-dynamic";
@@ -43,82 +44,10 @@ export default async function Page() {
         </button>
       </div>
 
-      {/* Top Brands Section */}
-      <div className="mx-auto max-w-6xl">
-        <h2 className="mb-4 text-center text-xl font-bold text-red-500">
-          TOP BRANDS
-        </h2>
-        {/* Top row: 4 brands, bottom border only */}
-        <div className="mb-2 grid grid-cols-4 gap-2">
-          {[
-            {
-              name: "Beltas",
-              src: "https://via.placeholder.com/120x60?text=Beltas",
-            },
-            {
-              name: "Darley",
-              src: "https://via.placeholder.com/120x60?text=Darley",
-            },
-            {
-              name: "JJXF",
-              src: "https://via.placeholder.com/120x60?text=JJXF",
-            },
-            { name: "JSP", src: "https://via.placeholder.com/120x60?text=JSP" },
-          ].map((brand) => (
-            <div
-              key={brand.name}
-              className="flex flex-col items-center border-b-4 border-red-500 bg-white px-2 py-6"
-            >
-              <Image
-                src={brand.src}
-                alt={brand.name}
-                className="mb-2 h-12 object-contain"
-                width={120}
-                height={60}
-              />
-              <span className="mt-2 text-center text-sm font-medium">
-                {brand.name}
-              </span>
-            </div>
-          ))}
-        </div>
-        {/* Bottom row: 3 brands, full border */}
-        <div className="mb-8 grid grid-cols-3 gap-2">
-          {[
-            {
-              name: "Kuba Pompa",
-              src: "https://via.placeholder.com/120x60?text=Kuba+Pompa",
-            },
-            {
-              name: "Task Force Tips",
-              src: "https://via.placeholder.com/120x60?text=TFT",
-            },
-            {
-              name: "Uvex",
-              src: "https://via.placeholder.com/120x60?text=Uvex",
-            },
-          ].map((brand) => (
-            <div
-              key={brand.name}
-              className="flex flex-col items-center border-4 border-red-500 bg-white px-2 py-6"
-            >
-              <Image
-                src={brand.src}
-                alt={brand.name}
-                className="mb-2 h-12 object-contain"
-                width={120}
-                height={60}
-              />
-              <span className="mt-2 text-center text-sm font-medium">
-                {brand.name}
-              </span>
-            </div>
-          ))}
-        </div>
-      </div>
+      <ProductTopBrands />
 
       {/* All Products Section */}
-      <div className="mx-auto max-w-6xl">
+      <div className="mx-auto mb-40 max-w-6xl">
         <h2 className="mb-4 text-center text-xl font-bold text-red-500">
           ALL PRODUCTS
         </h2>
