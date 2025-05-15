@@ -7,7 +7,7 @@
   --foreground: #171717;
   --p: 50px;
   --border-color: #ed1c24;
-  --font-poppins: 'Poppins',sans-serif;
+  --font-poppins: "Poppins", sans-serif;
 }
 
 @media (prefers-color-scheme: dark) {
@@ -96,9 +96,29 @@
   .nav-border-color {
     border-color: var(--border-color);
   }
-  .dropdown-item {
-  @apply inline-block w-full px-3 py-4 font-poppins hover:bg-stone-200
 }
+
+/* Dropdown menu styles */
+.dropdown-item {
+  display: flex;
+  width: 100%;
+  padding: 0.75rem 1.5rem;
+  align-items: center;
+  justify-content: space-between;
+  transition: all 0.2s ease;
+}
+
+.dropdown-item:hover {
+  background-color: #f0efef;
+}
+
+.group\/subcategory:hover > .dropdown-item {
+  background-color: #f0efef;
+}
+
+/* Remove extra arrow that was added previously */
+.group\/subcategory .dropdown-item::after {
+  content: none;
 }
 
 .swiper {
@@ -115,8 +135,6 @@
   justify-content: center;
   align-items: center;
 }
-
-
 
 /* .swiper-slide img {
   display: block;
