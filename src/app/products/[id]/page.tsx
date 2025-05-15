@@ -1,5 +1,5 @@
 import Header from "@/components/Header";
-import { FiFileText, FiMapPin, FiInfo } from "react-icons/fi";
+import { FiFileText, FiMapPin, FiInfo, FiShoppingCart } from "react-icons/fi";
 import supabase from "@/lib/supabase-client";
 import { Product } from "@/types/products";
 import { notFound } from "next/navigation";
@@ -116,6 +116,12 @@ export default async function Page({ params }: { params: { id: string } }) {
             <button className="flex items-center gap-2 rounded bg-red-700 px-6 py-2 font-semibold text-white">
               <FiMapPin size={18} /> Store Locator
             </button>
+            <a
+              href="#"
+              className="flex items-center gap-2 rounded bg-green-600 px-6 py-2 font-semibold text-white"
+            >
+              <FiShoppingCart size={18} /> Buy Now
+            </a>
           </div>
 
           {product.size && (
