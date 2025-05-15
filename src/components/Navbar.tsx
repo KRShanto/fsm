@@ -89,6 +89,283 @@ export default function Navbar() {
     },
   ];
 
+  // Services categories and subcategories as shown in the image
+  const serviceCategories = [
+    {
+      name: "Off-line Training",
+      subcategories: [
+        {
+          name: "Safety Management System (SMS)",
+          items: [
+            {
+              name: "Commercial Safety Management System",
+              link: "/services/sms/commercial",
+            },
+            {
+              name: "Industrial Safety Management System",
+              link: "/services/sms/industrial",
+            },
+          ],
+        },
+        {
+          name: "Fire Management System",
+          items: [
+            {
+              name: "Industrial Fire Management System",
+              link: "/services/fire-management/industrial",
+            },
+            {
+              name: "Commercial Fire Management System",
+              link: "/services/fire-management/commercial",
+            },
+            {
+              name: "Seaport Firefighting Tactics",
+              link: "/services/fire-management/seaport",
+            },
+            {
+              name: "Firefighting Equipment use and Selection",
+              link: "/services/fire-management/equipment",
+            },
+          ],
+        },
+        {
+          name: "Emergency Response Plan (ERP)",
+          items: [
+            {
+              name: "Commercial Emergency Response Plan",
+              link: "/services/erp/commercial",
+            },
+            {
+              name: "Residential Emergency Response Plan",
+              link: "/services/erp/residential",
+            },
+          ],
+        },
+        {
+          name: "Occupational Safety & Health (OSH)",
+          items: [
+            {
+              name: "Hazardous Communication (HazCom)",
+              link: "/services/osh/hazcom",
+            },
+            { name: "Trauma Mannual (NaDaP)", link: "/services/osh/trauma" },
+            {
+              name: "Hazardous Operation (HazOp)",
+              link: "/services/osh/hazop",
+            },
+            {
+              name: "Personal Protective Equipment (PPE)",
+              link: "/services/osh/ppe",
+            },
+            {
+              name: "Hazard Identification & Risk Assessment (HIRA)",
+              link: "/services/osh/hira",
+            },
+            { name: "Confined Space", link: "/services/osh/confined-space" },
+            {
+              name: "Respiratory Protection System",
+              link: "/services/osh/respiratory",
+            },
+            {
+              name: "Life Control Protection",
+              link: "/services/osh/life-control",
+            },
+            {
+              name: "Gas Detection System",
+              link: "/services/osh/gas-detection",
+            },
+            { name: "Breathing Air", link: "/services/osh/breathing-air" },
+          ],
+        },
+        {
+          name: "Process Safety Management (PSM)",
+          items: [
+            {
+              name: "Fundamental of Process Safety Management (PSM)",
+              link: "/services/psm/fundamental",
+            },
+            { name: "Design Safety", link: "/services/psm/design" },
+            {
+              name: "Design of Job Safety Analysis (JSA)",
+              link: "/services/psm/jsa",
+            },
+            {
+              name: "Basics of Process Hazard Analysis (PHA)",
+              link: "/services/psm/pha",
+            },
+          ],
+        },
+      ],
+    },
+    {
+      name: "On-line Training",
+      subcategories: [
+        {
+          name: "Safety Management System (SMS)",
+          items: [
+            {
+              name: "Basics of Industrial Safety Management System",
+              link: "/services/online/sms/industrial",
+            },
+            {
+              name: "Basics of Commercial Safety Management System",
+              link: "/services/online/sms/commercial",
+            },
+            {
+              name: "Basics of Residential Safety Management System",
+              link: "/services/online/sms/residential",
+            },
+          ],
+        },
+        {
+          name: "Fire Management System",
+          items: [
+            {
+              name: "Industrial Fire Management",
+              link: "/services/online/fire/industrial",
+            },
+            {
+              name: "Commercial Fire Management",
+              link: "/services/online/fire/commercial",
+            },
+            {
+              name: "Residential Fire Management",
+              link: "/services/online/fire/residential",
+            },
+            {
+              name: "Firefighting Tactics Knowledge and Equipment",
+              link: "/services/online/fire/tactics",
+            },
+          ],
+        },
+        {
+          name: "Emergency Response Plan (ERP)",
+          items: [
+            {
+              name: "Commercial Emergency Response Plan",
+              link: "/services/online/erp/commercial",
+            },
+            {
+              name: "Residential Emergency Response Plan",
+              link: "/services/online/erp/residential",
+            },
+          ],
+        },
+        {
+          name: "Occupational Safety & Health (OSH)",
+          items: [
+            {
+              name: "Hazardous Communication (HazCom) Basics",
+              link: "/services/online/osh/hazcom",
+            },
+            {
+              name: "Hazardous Operation (HazOp) Basics",
+              link: "/services/online/osh/hazop",
+            },
+            {
+              name: "Personal Protective Equipment (PPE) Basics",
+              link: "/services/online/osh/ppe",
+            },
+            {
+              name: "Hazard Identification & Risk Assessment (HIRA) Basics",
+              link: "/services/online/osh/hira",
+            },
+            {
+              name: "Basics of Construction Safety",
+              link: "/services/online/osh/construction",
+            },
+            {
+              name: "Basics of Respiratory Protection System",
+              link: "/services/online/osh/respiratory",
+            },
+            {
+              name: "Basics of Job Critical Procedures (JCP)",
+              link: "/services/online/osh/jcp",
+            },
+            {
+              name: "Basics of Gas Detection System",
+              link: "/services/online/osh/gas-detection",
+            },
+          ],
+        },
+        {
+          name: "Process Safety Management (PSM)",
+          items: [
+            {
+              name: "Basics of Process Safety Management (PSM)",
+              link: "/services/online/psm/basics",
+            },
+            {
+              name: "Basics of Process Hazard Analysis (PHA)",
+              link: "/services/online/psm/pha",
+            },
+          ],
+        },
+      ],
+    },
+    {
+      name: "Consultancy",
+      subcategories: [
+        {
+          name: "Safety Management System (SMS)",
+          items: [
+            {
+              name: "Industrial",
+              link: "/services/consultancy/sms/industrial",
+            },
+            {
+              name: "Residential",
+              link: "/services/consultancy/sms/residential",
+            },
+          ],
+        },
+        {
+          name: "Fire Management System (FMS)",
+          items: [
+            {
+              name: "Industrial",
+              link: "/services/consultancy/fms/industrial",
+            },
+            {
+              name: "Commercial",
+              link: "/services/consultancy/fms/commercial",
+            },
+            {
+              name: "Residential",
+              link: "/services/consultancy/fms/residential",
+            },
+          ],
+        },
+        {
+          name: "Emergency Response Plan (ERP)",
+          items: [
+            {
+              name: "Industrial",
+              link: "/services/consultancy/erp/industrial",
+            },
+            {
+              name: "Commercial",
+              link: "/services/consultancy/erp/commercial",
+            },
+            {
+              name: "Residential",
+              link: "/services/consultancy/erp/residential",
+            },
+          ],
+        },
+        {
+          name: "Process Safety Management (PSM)",
+          items: [
+            {
+              name: "Industrial",
+              link: "/services/consultancy/psm/industrial",
+            },
+          ],
+        },
+      ],
+    },
+  ];
+
   return (
     <div className="sticky top-0 z-50 h-[100px] w-full">
       <div className="relative mx-auto h-full max-w-[72rem]">
@@ -169,9 +446,57 @@ export default function Navbar() {
             </div>
           </div>
 
-          <Link href="/services" className="font-medium uppercase">
-            Services
-          </Link>
+          {/* Services Dropdown - Complex Multi-level */}
+          <div className="group relative">
+            <button className="flex items-center space-x-1 font-medium uppercase">
+              <span>Services</span>
+              <MdArrowDropDown size={20} />
+            </button>
+            <div className="absolute left-0 z-50 hidden w-[240px] rounded-sm bg-[#F9F6EE] normal-case shadow-md transition-all duration-300 group-hover:block">
+              {serviceCategories.map((category, index) => (
+                <div
+                  key={index}
+                  className="group/subcategory relative border-b border-gray-200 last:border-b-0"
+                >
+                  <div className="dropdown-item flex cursor-pointer items-center justify-between py-4 pl-6 pr-4 text-sm">
+                    <span>{category.name}</span>
+                    <MdArrowDropDown
+                      size={16}
+                      className="ml-2 -rotate-90 transform text-gray-600"
+                    />
+                  </div>
+                  <div className="absolute left-full top-0 z-50 hidden min-w-[280px] rounded-sm bg-white shadow-md transition-all duration-200 group-hover/subcategory:block">
+                    {category.subcategories.map((subcategory, subIndex) => (
+                      <div
+                        key={subIndex}
+                        className="group/subitem relative border-b border-gray-200 last:border-b-0"
+                      >
+                        <div className="dropdown-item flex cursor-pointer items-center justify-between py-3 pl-6 pr-4 text-sm">
+                          <span>{subcategory.name}</span>
+                          <MdArrowDropDown
+                            size={16}
+                            className="ml-2 -rotate-90 transform text-gray-600"
+                          />
+                        </div>
+                        <div className="absolute left-full top-0 z-50 hidden max-h-[80vh] min-w-[320px] overflow-y-auto rounded-sm bg-white shadow-md transition-all duration-200 group-hover/subitem:block">
+                          {subcategory.items.map((item, itemIndex) => (
+                            <Link
+                              key={itemIndex}
+                              href={item.link}
+                              className="dropdown-item border-b border-gray-200 py-3 pl-6 pr-4 text-sm last:border-b-0 hover:text-blue-600"
+                            >
+                              <span>{item.name}</span>
+                            </Link>
+                          ))}
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+
           <Link href="/">
             <Image
               src="/Logo.png"
