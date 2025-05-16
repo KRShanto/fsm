@@ -5,6 +5,13 @@ export interface ProductImage {
   product: number | null;
 }
 
+export interface StandardImage {
+  id: number;
+  created_at: string;
+  image_url: string | null;
+  product: number | null;
+}
+
 export interface Documentation {
   id: number;
   created_at: string;
@@ -26,6 +33,7 @@ export interface Product {
   long_description: string | null;
   standards: string | null;
   product_images?: ProductImage[];
+  standard_images?: StandardImage[];
   documentation?: Documentation[];
   brand: string | null;
 }

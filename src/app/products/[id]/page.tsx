@@ -17,6 +17,7 @@ async function getProduct(id: string): Promise<Product | null> {
       `
       *,
       product_images(*),
+      standard_images(*),
       documentation(*)
     `,
     )
@@ -64,6 +65,7 @@ export default async function Page({ params }: { params: { id: string } }) {
       id: "standards",
       label: "Standards / Certifications",
       content: product.standards || "No standards information available",
+      standard_images: product.standard_images || [],
     },
     {
       id: "sectors",

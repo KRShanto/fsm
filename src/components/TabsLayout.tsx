@@ -2,6 +2,7 @@
 
 import React, { useState } from "react";
 import { FiFileText } from "react-icons/fi";
+import Image from "next/image";
 
 interface Documentation {
   id: number;
@@ -11,11 +12,19 @@ interface Documentation {
   product: number | null;
 }
 
+interface StandardImage {
+  id: number;
+  created_at: string;
+  image_url: string | null;
+  product: number | null;
+}
+
 interface TabData {
   id: string;
   label: string;
   content: string;
   docs?: Documentation[];
+  standard_images?: StandardImage[];
 }
 
 interface TabsLayoutProps {
@@ -79,6 +88,30 @@ export default function TabsLayout({ tabs }: TabsLayoutProps) {
                   </div>
                 )}
               </div>
+            ) : tab.id === "standards" &&
+              tab.standard_images &&
+              tab.standard_images.length > 0 ? (
+              <>
+                <div className="mb-6 grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5">
+                  {tab.standard_images.map((img) => (
+                    <div key={img.id} className="flex flex-col items-center">
+                      <div className="h-24 w-24 overflow-hidden rounded-lg border bg-white p-2 shadow-sm">
+                        <Image
+                          src={img.image_url || "/standard-default.png"}
+                          alt="Standard certification"
+                          width={80}
+                          height={80}
+                          className="h-full w-full object-contain"
+                        />
+                      </div>
+                    </div>
+                  ))}
+                </div>
+                <div
+                  className="tiptap prose max-w-none"
+                  dangerouslySetInnerHTML={{ __html: tab.content }}
+                />
+              </>
             ) : (
               <div
                 className="tiptap prose max-w-none"
