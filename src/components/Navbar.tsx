@@ -23,9 +23,9 @@ export default function Navbar() {
         {
           name: "Kube Pompa",
           origin: "Türkiye",
-          link: "/products/portable-fire-pump",
+          link: "/products/kube-pompa",
         },
-        { name: "Darley", origin: "USA", link: "/products/portable-fire-pump" },
+        { name: "Darley", origin: "USA", link: "/products/darley" },
       ],
     },
     {
@@ -35,14 +35,14 @@ export default function Navbar() {
         {
           name: "JJXF",
           origin: "China",
-          link: "/products/fire-fighting-nozzle",
+          link: "/products/jjxf",
         },
       ],
     },
     {
       name: "Personal Protective Equipment (PPE)",
       subcategories: [
-        { name: "UVEX", origin: "Germany", link: "/products/ppe" },
+        { name: "UVEX", origin: "Germany", link: "/products/uvex" },
       ],
     },
     {
@@ -51,25 +51,25 @@ export default function Navbar() {
         {
           name: "Cold-Fire",
           origin: "USA",
-          link: "/products/fire-extinguishers",
+          link: "/products/cold-fire",
         },
       ],
     },
     {
       name: "Military Vehicles",
       subcategories: [
-        { name: "Darley", origin: "USA", link: "/products/military-vehicles" },
+        { name: "Darley", origin: "USA", link: "/products/darley" },
         {
           name: "Beltas",
           origin: "Türkiye",
-          link: "/products/military-vehicles",
+          link: "/products/beltas",
         },
       ],
     },
     {
       name: "Defense Products",
       subcategories: [
-        { name: "Darley", origin: "USA", link: "/products/defense-products" },
+        { name: "Darley", origin: "USA", link: "/products/darley" },
       ],
     },
     {
@@ -78,12 +78,12 @@ export default function Navbar() {
         {
           name: "Beltas",
           origin: "Türkiye",
-          link: "/products/firefighting-vehicles",
+          link: "/products/beltas",
         },
         {
           name: "Darley",
           origin: "USA",
-          link: "/products/firefighting-vehicles",
+          link: "/products/darley",
         },
       ],
     },
