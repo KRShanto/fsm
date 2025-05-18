@@ -2,92 +2,61 @@ import React from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { MdArrowDropDown } from "react-icons/md";
+import {
+  getAllCategories,
+  buildCategoryTree,
+  buildCategoryPath,
+} from "@/lib/category-service";
+import { Category } from "@/types/categories";
 
-export default function Navbar() {
-  // Product categories and subcategories as shown in the image
-  const productCategories = [
-    {
-      name: "BeSafe Series",
-      subcategories: [
-        { name: "Gloves", origin: "Bangladesh", link: "/products/gloves" },
-        {
-          name: "Work Wear",
-          origin: "Bangladesh",
-          link: "/products/work-wear",
-        },
-      ],
-    },
-    {
-      name: "Portable Fire Pump",
-      subcategories: [
-        {
-          name: "Kube Pompa",
-          origin: "Türkiye",
-          link: "/products/kube-pompa",
-        },
-        { name: "Darley", origin: "USA", link: "/products/darley" },
-      ],
-    },
-    {
-      name: "Fire Fighting Nozzle",
-      subcategories: [
-        { name: "TFT", origin: "USA", link: "/products/fire-fighting-nozzle" },
-        {
-          name: "JJXF",
-          origin: "China",
-          link: "/products/jjxf",
-        },
-      ],
-    },
-    {
-      name: "Personal Protective Equipment (PPE)",
-      subcategories: [
-        { name: "UVEX", origin: "Germany", link: "/products/uvex" },
-      ],
-    },
-    {
-      name: "Fire Extinguishers",
-      subcategories: [
-        {
-          name: "Cold-Fire",
-          origin: "USA",
-          link: "/products/cold-fire",
-        },
-      ],
-    },
-    {
-      name: "Military Vehicles",
-      subcategories: [
-        { name: "Darley", origin: "USA", link: "/products/darley" },
-        {
-          name: "Beltas",
-          origin: "Türkiye",
-          link: "/products/beltas",
-        },
-      ],
-    },
-    {
-      name: "Defense Products",
-      subcategories: [
-        { name: "Darley", origin: "USA", link: "/products/darley" },
-      ],
-    },
-    {
-      name: "Firefighting Vehicles",
-      subcategories: [
-        {
-          name: "Beltas",
-          origin: "Türkiye",
-          link: "/products/beltas",
-        },
-        {
-          name: "Darley",
-          origin: "USA",
-          link: "/products/darley",
-        },
-      ],
-    },
-  ];
+// Make this a server component for data fetching
+export const dynamic = "force-dynamic";
+
+export default async function Navbar() {
+  // Fetch all categories and build the tree
+  const allCategories = await getAllCategories();
+  const categoryTree = buildCategoryTree(allCategories);
+
+  // Create a map for quick category lookups
+  const categoryMap = new Map<number, Category>();
+  allCategories.forEach((category) => {
+    categoryMap.set(category.id, category);
+  });
+
+  // Recursive function to render nested categories
+  function renderCategories(categories: Category[]) {
+    return categories.map((category) => (
+      <div
+        key={category.id}
+        className="group/subcategory relative border-b border-gray-200 last:border-b-0"
+      >
+        {category.children && category.children.length > 0 ? (
+          <>
+            <Link
+              href={buildCategoryPath(category, categoryMap)}
+              className="dropdown-item flex cursor-pointer items-center justify-between py-4 pl-6 pr-4 text-sm hover:text-blue-600"
+            >
+              <span>{category.name}</span>
+              <MdArrowDropDown
+                size={16}
+                className="ml-2 -rotate-90 transform text-gray-600"
+              />
+            </Link>
+            <div className="absolute left-full top-0 z-50 hidden min-w-[240px] rounded-sm bg-white shadow-md transition-all duration-200 group-hover/subcategory:block">
+              {renderCategories(category.children)}
+            </div>
+          </>
+        ) : (
+          <Link
+            href={buildCategoryPath(category, categoryMap)}
+            className="dropdown-item border-b border-gray-200 py-4 pl-6 pr-4 text-sm last:border-b-0 hover:text-blue-600"
+          >
+            <span>{category.name}</span>
+          </Link>
+        )}
+      </div>
+    ));
+  }
 
   // Services categories and subcategories as shown in the image
   const serviceCategories = [
@@ -415,34 +384,7 @@ export default function Navbar() {
               <MdArrowDropDown size={20} />
             </button>
             <div className="absolute left-0 z-50 hidden w-[240px] rounded-sm bg-[#F9F6EE] normal-case shadow-md transition-all duration-300 group-hover:block">
-              {productCategories.map((category, index) => (
-                <div
-                  key={index}
-                  className="group/subcategory relative border-b border-gray-200 last:border-b-0"
-                >
-                  <div className="dropdown-item flex cursor-pointer items-center justify-between py-4 pl-6 pr-4 text-sm">
-                    <span>{category.name}</span>
-                    <MdArrowDropDown
-                      size={16}
-                      className="ml-2 -rotate-90 transform text-gray-600"
-                    />
-                  </div>
-                  <div className="absolute left-full top-0 z-50 hidden min-w-[240px] rounded-sm bg-white shadow-md transition-all duration-200 group-hover/subcategory:block">
-                    {category.subcategories.map((subcategory, subIndex) => (
-                      <Link
-                        key={subIndex}
-                        href={subcategory.link}
-                        className="dropdown-item border-b border-gray-200 py-4 pl-6 pr-4 text-sm last:border-b-0 hover:text-blue-600"
-                      >
-                        <span>{subcategory.name}</span>
-                        <span className="ml-2 text-xs text-gray-500">
-                          ({subcategory.origin})
-                        </span>
-                      </Link>
-                    ))}
-                  </div>
-                </div>
-              ))}
+              {renderCategories(categoryTree)}
             </div>
           </div>
 
