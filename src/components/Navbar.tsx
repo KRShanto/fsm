@@ -37,10 +37,17 @@ export default async function Navbar() {
               className="dropdown-item flex cursor-pointer items-center justify-between py-4 pl-6 pr-4 text-sm hover:text-blue-600"
             >
               <span>{category.name}</span>
-              <MdArrowDropDown
-                size={16}
-                className="ml-2 -rotate-90 transform text-gray-600"
-              />
+              <div className="flex items-center gap-2">
+                {category.country && (
+                  <span className="text-xs text-gray-500">
+                    (made in {category.country})
+                  </span>
+                )}
+                <MdArrowDropDown
+                  size={16}
+                  className="ml-2 -rotate-90 transform text-gray-600"
+                />
+              </div>
             </Link>
             <div className="absolute left-full top-0 z-50 hidden min-w-[240px] rounded-sm bg-white shadow-md transition-all duration-200 group-hover/subcategory:block">
               {renderCategories(category.children)}
@@ -51,7 +58,14 @@ export default async function Navbar() {
             href={buildCategoryPath(category, categoryMap)}
             className="dropdown-item border-b border-gray-200 py-4 pl-6 pr-4 text-sm last:border-b-0 hover:text-blue-600"
           >
-            <span>{category.name}</span>
+            <div className="flex w-full items-center justify-between">
+              <span>{category.name}</span>
+              {category.country && (
+                <span className="text-xs text-gray-500">
+                  (made in {category.country})
+                </span>
+              )}
+            </div>
           </Link>
         )}
       </div>
