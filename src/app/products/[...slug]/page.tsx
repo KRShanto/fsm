@@ -6,6 +6,7 @@ import { Product, ProductImage } from "@/types/products";
 import Header from "@/components/Header";
 import Link from "next/link";
 import Image from "next/image";
+import ComparisonButton from "@/components/ComparisonButton";
 
 interface Props {
   params: {
@@ -13,19 +14,9 @@ interface Props {
   };
 }
 
-type DatabaseProduct = Pick<
-  Product,
-  "id" | "created_at" | "heading" | "subheading" | "brand"
-> & {
-  product_images: Pick<
-    ProductImage,
-    "id" | "created_at" | "image_url" | "product"
-  >[];
-};
-
 interface ProductCategoryResponse {
   product_id: number;
-  products: DatabaseProduct;
+  products: Product;
 }
 
 async function getCategoryBySlug(slug: string): Promise<Category | null> {
@@ -68,9 +59,7 @@ async function getAllSubcategoryIds(categoryId: number): Promise<number[]> {
   return result;
 }
 
-async function getProductsByCategory(
-  categoryId: number,
-): Promise<DatabaseProduct[]> {
+async function getProductsByCategory(categoryId: number): Promise<Product[]> {
   // Get all subcategories recursively
   const categoryIds = await getAllSubcategoryIds(categoryId);
 
@@ -80,19 +69,7 @@ async function getProductsByCategory(
     .select(
       `
       product,
-      products!inner (
-        id,
-        created_at,
-        heading,
-        subheading,
-        brand,
-        product_images (
-          id,
-          created_at,
-          image_url,
-          product
-        )
-      )
+      products!inner ( * )
     `,
     )
     .in("category", categoryIds);
@@ -105,7 +82,7 @@ async function getProductsByCategory(
   // First cast to unknown, then to our known response type
   const typedData = data as unknown as {
     product: number;
-    products: DatabaseProduct;
+    products: Product;
   }[];
   return typedData?.map((item) => item.products) || [];
 }
@@ -188,31 +165,39 @@ export default async function CategoryPage({ params }: Props) {
 
         <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
           {products.map((product) => (
-            <Link
+            <div
               key={product.id}
-              href={`/products/item/${product.id}`}
-              className="group rounded-lg border border-gray-200 p-4 transition-shadow hover:shadow-lg"
+              className="relative rounded-lg border border-gray-200 bg-white p-4 transition-shadow hover:shadow-lg"
             >
-              <div className="aspect-square overflow-hidden rounded-md">
-                <Image
-                  src={
-                    product.product_images?.[0]?.image_url ||
-                    "/product-placeholder.png"
-                  }
-                  alt={product.heading || "Product"}
-                  width={300}
-                  height={300}
-                  className="h-full w-full object-cover transition-transform group-hover:scale-105"
-                />
+              {/* Compare Button - top left, absolute */}
+              <div className="absolute left-3 top-3 z-10">
+                <ComparisonButton product={product} iconOnly />
               </div>
-              <div className="mt-4">
-                <p className="text-sm text-gray-500">{product.brand}</p>
-                <h3 className="mt-1 font-medium">{product.heading}</h3>
-                <p className="mt-1 text-sm text-gray-600">
-                  {product.subheading}
-                </p>
-              </div>
-            </Link>
+              <Link
+                href={`/products/item/${product.id}`}
+                className="group block"
+              >
+                <div className="aspect-square overflow-hidden rounded-md">
+                  <Image
+                    src={
+                      product.product_images?.[0]?.image_url ||
+                      "/product-placeholder.png"
+                    }
+                    alt={product.heading || "Product"}
+                    width={300}
+                    height={300}
+                    className="h-full w-full object-cover transition-transform group-hover:scale-105"
+                  />
+                </div>
+                <div className="mt-4">
+                  <p className="text-sm text-gray-500">{product.brand}</p>
+                  <h3 className="mt-1 font-medium">{product.heading}</h3>
+                  <p className="mt-1 text-sm text-gray-600">
+                    {product.subheading}
+                  </p>
+                </div>
+              </Link>
+            </div>
           ))}
         </div>
 

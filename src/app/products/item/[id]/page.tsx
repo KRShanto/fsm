@@ -199,7 +199,8 @@ export default async function Page({ params }: { params: { id: string } }) {
                 rel="noopener noreferrer"
                 className="flex items-center gap-2 rounded bg-blue-900 px-6 py-2 font-semibold text-white"
               >
-                <FiFileText size={18} /> Technical File
+                <FiFileText className="h-5 w-5" />
+                Technical File
               </a>
             )}
             <button className="flex items-center gap-2 rounded bg-red-700 px-6 py-2 font-semibold text-white">

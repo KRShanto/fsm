@@ -4,6 +4,8 @@ import "./globals.css";
 import Navbar from "@/components/Navbar";
 import HeroVideo from "@/components/HeroVideo";
 import Footer from "@/components/Footer";
+import { ComparisonProvider } from "@/context/ComparisonContext";
+import FloatingComparisonBar from "@/components/FloatingComparisonBar";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -31,10 +33,13 @@ export default function RootLayout({
   return (
     <html lang="en" className={`${alumniSans.variable} ${montserrat.variable}`}>
       <body style={inter.style}>
-        <Navbar />
-        <HeroVideo />
-        {children}
-        <Footer />
+        <ComparisonProvider>
+          <Navbar />
+          <HeroVideo />
+          {children}
+          <Footer />
+          <FloatingComparisonBar />
+        </ComparisonProvider>
       </body>
     </html>
   );
