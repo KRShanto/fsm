@@ -1,8 +1,10 @@
-import React from "react";
-import { notFound } from "next/navigation";
+"use client";
+
+import React, { useEffect, useState } from "react";
+import { notFound, useParams } from "next/navigation";
 import supabase from "@/lib/supabase-client";
 import { Category } from "@/types/categories";
-import { Product, ProductImage } from "@/types/products";
+import { Product } from "@/types/products";
 import Header from "@/components/Header";
 import Link from "next/link";
 import Image from "next/image";
@@ -19,6 +21,7 @@ interface ProductCategoryResponse {
   products: Product;
 }
 
+// Move helper functions outside component to avoid recreating them on each render
 async function getCategoryBySlug(slug: string): Promise<Category | null> {
   const { data, error } = await supabase
     .from("categories")
@@ -37,7 +40,6 @@ async function getCategoryBySlug(slug: string): Promise<Category | null> {
 async function getAllSubcategoryIds(categoryId: number): Promise<number[]> {
   const result: number[] = [categoryId];
 
-  // Get immediate subcategories
   const { data: subcategories, error } = await supabase
     .from("categories")
     .select("id")
@@ -48,7 +50,6 @@ async function getAllSubcategoryIds(categoryId: number): Promise<number[]> {
     return result;
   }
 
-  // Recursively get subcategories for each immediate subcategory
   if (subcategories) {
     for (const sub of subcategories) {
       const childIds = await getAllSubcategoryIds(sub.id);
@@ -60,10 +61,8 @@ async function getAllSubcategoryIds(categoryId: number): Promise<number[]> {
 }
 
 async function getProductsByCategory(categoryId: number): Promise<Product[]> {
-  // Get all subcategories recursively
   const categoryIds = await getAllSubcategoryIds(categoryId);
 
-  // Fetch products from all relevant categories
   const { data, error } = await supabase
     .from("product_categories")
     .select(
@@ -84,7 +83,6 @@ async function getProductsByCategory(categoryId: number): Promise<Product[]> {
     return [];
   }
 
-  // First cast to unknown, then to our known response type
   const typedData = data as unknown as {
     product: number;
     products: Product;
@@ -99,11 +97,7 @@ async function validateCategoryPath(slugs: string[]): Promise<Category | null> {
     const category = await getCategoryBySlug(slug);
 
     if (!category) return null;
-
-    // For first category, parent should be null
     if (!currentCategory && category.parent !== null) return null;
-
-    // For subsequent categories, parent should match previous category
     if (currentCategory && category.parent !== currentCategory.id) return null;
 
     currentCategory = category;
@@ -112,26 +106,73 @@ async function validateCategoryPath(slugs: string[]): Promise<Category | null> {
   return currentCategory;
 }
 
-export default async function CategoryPage({ params }: Props) {
-  // Validate the entire category path
-  const category = await validateCategoryPath(params.slug);
+export default function CategoryPage({ params }: Props) {
+  const [category, setCategory] = useState<Category | null>(null);
+  const [products, setProducts] = useState<Product[]>([]);
+  const [breadcrumbs, setBreadcrumbs] = useState<Category[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
-  if (!category) {
-    notFound();
+  useEffect(() => {
+    async function fetchData() {
+      try {
+        setIsLoading(true);
+        setError(null);
+
+        // Validate category path
+        const validatedCategory = await validateCategoryPath(params.slug);
+        if (!validatedCategory) {
+          setError("Category not found");
+          return;
+        }
+        setCategory(validatedCategory);
+
+        // Fetch products
+        const categoryProducts = await getProductsByCategory(
+          validatedCategory.id,
+        );
+        setProducts(categoryProducts);
+
+        // Get breadcrumb data
+        const breadcrumbData = await Promise.all(
+          params.slug.map(async (slug) => await getCategoryBySlug(slug)),
+        );
+        setBreadcrumbs(
+          breadcrumbData.filter((crumb): crumb is Category => crumb !== null),
+        );
+      } catch (err) {
+        setError(err instanceof Error ? err.message : "An error occurred");
+        console.error("Error fetching data:", err);
+      } finally {
+        setIsLoading(false);
+      }
+    }
+
+    fetchData();
+  }, [params.slug]);
+
+  if (isLoading) {
+    return (
+      <div className="min-h-screen bg-white font-montserrat">
+        <Header
+          heading="FSM Safety Selections"
+          subheading="Explore Our Curated Collection of World-Class Safety Solutions"
+        />
+        <div className="mx-auto max-w-7xl px-4 py-8">
+          <div className="flex items-center justify-center">
+            <div className="text-center">
+              <div className="h-8 w-32 animate-pulse rounded bg-gray-200"></div>
+              <div className="mt-4 h-4 w-48 animate-pulse rounded bg-gray-200"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
   }
 
-  // Get products for this category
-  const products = await getProductsByCategory(category.id);
-
-  // Get breadcrumb data
-  const breadcrumbs = await Promise.all(
-    params.slug.map(async (slug) => await getCategoryBySlug(slug)),
-  );
-
-  // Filter out any null values from breadcrumbs
-  const validBreadcrumbs = breadcrumbs.filter(
-    (crumb): crumb is Category => crumb !== null,
-  );
+  if (error || !category) {
+    notFound();
+  }
 
   return (
     <div className="min-h-screen bg-white font-montserrat">
@@ -146,10 +187,10 @@ export default async function CategoryPage({ params }: Props) {
           <Link href="/products" className="hover:text-blue-600">
             Products
           </Link>
-          {validBreadcrumbs.map((crumb, index) => (
+          {breadcrumbs.map((crumb, index) => (
             <React.Fragment key={crumb.id}>
               <span className="text-gray-400">/</span>
-              {index === validBreadcrumbs.length - 1 ? (
+              {index === breadcrumbs.length - 1 ? (
                 <span className="font-medium text-gray-900">{crumb.name}</span>
               ) : (
                 <Link
@@ -174,7 +215,6 @@ export default async function CategoryPage({ params }: Props) {
               key={product.id}
               className="relative rounded-lg border border-gray-200 bg-white p-4 transition-shadow hover:shadow-lg"
             >
-              {/* Compare Button - top left, absolute */}
               <div className="absolute left-3 top-3 z-10">
                 <ComparisonButton product={product} iconOnly />
               </div>
