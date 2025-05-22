@@ -69,7 +69,12 @@ async function getProductsByCategory(categoryId: number): Promise<Product[]> {
     .select(
       `
       product,
-      products!inner ( * )
+      products!inner (
+        *,
+        product_images(*),
+        standard_images(*),
+        documentation(*)
+      )
     `,
     )
     .in("category", categoryIds);
