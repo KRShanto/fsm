@@ -1,4 +1,6 @@
-import React, { Fragment } from "react";
+"use client";
+
+import React, { Fragment, useEffect, useState } from "react";
 import Header from "@/components/Header";
 import { FiFileText, FiMapPin, FiInfo, FiShoppingCart } from "react-icons/fi";
 import supabase from "@/lib/supabase-client";
@@ -10,9 +12,7 @@ import TabsLayout from "@/components/TabsLayout";
 import Link from "next/link";
 import "../../../editor.css";
 
-// Make this a server component for data fetching
-export const dynamic = "force-dynamic";
-
+// Helper functions moved outside component
 async function getProduct(id: string): Promise<Product | null> {
   const { data, error } = await supabase
     .from("products")
@@ -36,7 +36,6 @@ async function getProduct(id: string): Promise<Product | null> {
 }
 
 async function getProductCategories(productId: string): Promise<Category[]> {
-  // First get the category IDs for this product
   const { data: productCategories, error: pcError } = await supabase
     .from("product_categories")
     .select("category")
@@ -47,7 +46,6 @@ async function getProductCategories(productId: string): Promise<Category[]> {
     return [];
   }
 
-  // Get the actual categories
   const categoryIds = productCategories.map((pc) => pc.category);
   const { data: categories, error: catError } = await supabase
     .from("categories")
@@ -82,18 +80,74 @@ async function getCategoryPath(category: Category): Promise<Category[]> {
   return path;
 }
 
-export default async function Page({ params }: { params: { id: string } }) {
-  const product = await getProduct(params.id);
+export default function Page({ params }: { params: { id: string } }) {
+  const [product, setProduct] = useState<Product | null>(null);
+  const [categoryPaths, setCategoryPaths] = useState<Category[][]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
-  if (!product) {
-    notFound();
+  useEffect(() => {
+    async function fetchData() {
+      try {
+        setIsLoading(true);
+        setError(null);
+
+        // Fetch product data
+        const productData = await getProduct(params.id);
+        if (!productData) {
+          setError("Product not found");
+          return;
+        }
+        setProduct(productData);
+
+        // Fetch categories and their paths
+        const productCategories = await getProductCategories(params.id);
+        const paths = await Promise.all(
+          productCategories.map((category) => getCategoryPath(category)),
+        );
+        setCategoryPaths(paths);
+      } catch (err) {
+        setError(err instanceof Error ? err.message : "An error occurred");
+        console.error("Error fetching data:", err);
+      } finally {
+        setIsLoading(false);
+      }
+    }
+
+    fetchData();
+  }, [params.id]);
+
+  if (isLoading) {
+    return (
+      <div className="min-h-screen bg-white font-montserrat">
+        <Header
+          heading="FSM Safety Selectons"
+          subheading="Explore Our Curated Collection of World-Class Safety Solutions—Selected Just for You."
+        />
+        <div className="mx-auto max-w-6xl px-4 py-8">
+          <div className="flex animate-pulse gap-10">
+            {/* Left side skeleton */}
+            <div className="h-[500px] w-1/2 rounded-lg bg-gray-200"></div>
+            {/* Right side skeleton */}
+            <div className="w-1/2 space-y-4">
+              <div className="h-4 w-1/3 rounded bg-gray-200"></div>
+              <div className="h-8 w-2/3 rounded bg-gray-200"></div>
+              <div className="h-20 w-full rounded bg-gray-200"></div>
+              <div className="h-4 w-1/4 rounded bg-gray-200"></div>
+              <div className="flex gap-4">
+                <div className="h-10 w-32 rounded bg-gray-200"></div>
+                <div className="h-10 w-32 rounded bg-gray-200"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
   }
 
-  // Get product categories and their full paths
-  const productCategories = await getProductCategories(params.id);
-  const categoryPaths = await Promise.all(
-    productCategories.map((category) => getCategoryPath(category)),
-  );
+  if (error || !product) {
+    notFound();
+  }
 
   // Get product images or use placeholders
   const productImages =
