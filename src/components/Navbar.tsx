@@ -1,4 +1,6 @@
-import React from "react";
+"use client";
+
+import React, { useEffect, useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { MdArrowDropDown } from "react-icons/md";
@@ -9,19 +11,36 @@ import {
 } from "@/lib/category-service";
 import { Category } from "@/types/categories";
 
-// Make this a server component for data fetching
-export const dynamic = "force-dynamic";
+export default function Navbar() {
+  const [categoryTree, setCategoryTree] = useState<Category[]>([]);
+  const [categoryMap, setCategoryMap] = useState<Map<number, Category>>(
+    new Map(),
+  );
+  const [isLoading, setIsLoading] = useState(true);
 
-export default async function Navbar() {
-  // Fetch all categories and build the tree
-  const allCategories = await getAllCategories();
-  const categoryTree = buildCategoryTree(allCategories);
+  useEffect(() => {
+    const fetchCategories = async () => {
+      try {
+        const allCategories = await getAllCategories();
+        const tree = buildCategoryTree(allCategories);
 
-  // Create a map for quick category lookups
-  const categoryMap = new Map<number, Category>();
-  allCategories.forEach((category) => {
-    categoryMap.set(category.id, category);
-  });
+        // Create a map for quick category lookups
+        const map = new Map<number, Category>();
+        allCategories.forEach((category) => {
+          map.set(category.id, category);
+        });
+
+        setCategoryTree(tree);
+        setCategoryMap(map);
+      } catch (error) {
+        console.error("Error fetching categories:", error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchCategories();
+  }, []);
 
   // Recursive function to render nested categories
   function renderCategories(categories: Category[]) {
@@ -398,7 +417,13 @@ export default async function Navbar() {
               <MdArrowDropDown size={20} />
             </button>
             <div className="absolute left-0 z-50 hidden w-[240px] rounded-sm bg-[#F9F6EE] normal-case shadow-md transition-all duration-300 group-hover:block">
-              {renderCategories(categoryTree)}
+              {isLoading ? (
+                <div className="py-4 pl-6 pr-4 text-sm text-gray-500">
+                  Loading...
+                </div>
+              ) : (
+                renderCategories(categoryTree)
+              )}
             </div>
           </div>
 
